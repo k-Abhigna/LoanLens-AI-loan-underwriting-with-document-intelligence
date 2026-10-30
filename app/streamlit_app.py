@@ -21,6 +21,25 @@ from loanlens.pipeline import METHODS, document_files, process_documents  # noqa
 st.set_page_config(page_title="LoanLens", page_icon="🏦", layout="wide")
 COLORS = {"APPROVE": "green", "REVIEW": "orange", "REJECT": "red"}
 ICONS = {"pass": "✅", "warn": "⚠️", "fail": "❌"}
+AUTHOR = "Abhigna Komaravolu"
+
+# Faint diagonal watermark behind the page + a fixed credit in the corner.
+# pointer-events: none keeps both from blocking clicks.
+st.markdown(f"""
+<style>
+.ll-watermark {{
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 6vw; font-weight: 700; white-space: nowrap; color: rgba(128, 128, 128, 0.08);
+    pointer-events: none; user-select: none; z-index: 999;
+}}
+.ll-credit {{
+    position: fixed; bottom: 8px; right: 16px; font-size: 13px; color: rgba(128, 128, 128, 0.9);
+    pointer-events: none; z-index: 999;
+}}
+</style>
+<div class="ll-watermark">{AUTHOR}</div>
+<div class="ll-credit">LoanLens · built by {AUTHOR}</div>
+""", unsafe_allow_html=True)
 
 
 def preview(path: Path):
