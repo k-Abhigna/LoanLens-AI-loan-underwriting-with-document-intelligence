@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.env
+
+# Large or reproducible data
+data/raw/
+data/processed/
+data/generated/
+data/audit_log.jsonl
+evals/results/*_demo.*

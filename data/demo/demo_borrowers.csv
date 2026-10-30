@@ -1,0 +1,41 @@
+id,loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,annual_inc,verification_status,issue_d,loan_status,purpose,dti,addr_state
+DEMO0001,12500, 60 months,19.02,324.39,A,Office Assistant,< 1 year,MORTGAGE,110500,Not Verified,Oct-2014,Fully Paid,debt_consolidation,5.09,FL
+DEMO0002,18250, 36 months,17.02,650.84,A,Project Manager,< 1 year,RENT,45500,Not Verified,Nov-2018,Fully Paid,medical,23.08,CA
+DEMO0003,5750, 36 months,11.79,190.41,B,Office Assistant,< 1 year,OWN,84500,Not Verified,May-2018,Fully Paid,debt_consolidation,22.94,WA
+DEMO0004,26750, 36 months,16.95,953.04,A,Project Manager,< 1 year,OWN,76000,Not Verified,Apr-2017,Charged Off,home_improvement,18.76,FL
+DEMO0005,22000, 36 months,21.89,838.94,F,Truck Driver,< 1 year,OWN,120500,Not Verified,May-2018,Charged Off,home_improvement,28.26,NY
+DEMO0006,10500, 60 months,9.3,219.49,C,Sales Manager,6 years,MORTGAGE,46500,Not Verified,Jan-2014,Charged Off,home_improvement,27.03,IL
+DEMO0007,32000, 36 months,22.8,1235.38,C,Electrician,< 1 year,RENT,155000,Not Verified,Dec-2016,Charged Off,home_improvement,27.8,WA
+DEMO0008,4250, 60 months,13.11,96.94,E,Registered Nurse,6 years,RENT,116500,Not Verified,Apr-2016,Fully Paid,credit_card,16.32,FL
+DEMO0009,13500, 60 months,14.03,314.33,C,Sales Manager,6 years,OWN,48500,Not Verified,May-2017,Charged Off,car,36.48,TX
+DEMO0010,14250, 36 months,10.64,464.1,B,Teacher,6 years,OWN,49000,Not Verified,Mar-2016,Charged Off,debt_consolidation,7.24,IL
+DEMO0011,23250, 36 months,19.81,861.8,E,Project Manager,< 1 year,MORTGAGE,122500,Not Verified,Nov-2018,Charged Off,car,16.36,CA
+DEMO0012,28500, 36 months,9.81,917.07,B,Electrician,1 year,RENT,151000,Not Verified,Jun-2018,Fully Paid,debt_consolidation,2.01,TX
+DEMO0013,26250, 36 months,7.41,815.45,B,Project Manager,6 years,RENT,53500,Not Verified,Nov-2016,Charged Off,medical,15.11,CA
+DEMO0014,34000, 60 months,15.61,819.79,C,Registered Nurse,1 year,RENT,57500,Not Verified,Dec-2016,Charged Off,car,31.84,TX
+DEMO0015,16000, 60 months,8.93,331.59,E,Teacher,10+ years,MORTGAGE,33500,Not Verified,Nov-2014,Charged Off,medical,15.2,TX
+DEMO0016,17250, 60 months,18.73,444.92,E,Truck Driver,1 year,MORTGAGE,119000,Not Verified,Dec-2015,Fully Paid,medical,19.74,WA
+DEMO0017,4750, 60 months,15.44,114.1,B,Project Manager,3 years,MORTGAGE,35000,Not Verified,Dec-2016,Charged Off,debt_consolidation,9.94,TX
+DEMO0018,15500, 60 months,10.09,330.02,E,Project Manager,< 1 year,MORTGAGE,148000,Not Verified,Nov-2016,Fully Paid,debt_consolidation,34.75,WA
+DEMO0019,33500, 36 months,14.68,1156.05,F,Accountant,< 1 year,OWN,79000,Not Verified,Jul-2017,Charged Off,debt_consolidation,28.09,TX
+DEMO0020,4750, 36 months,17.82,171.3,D,Sales Manager,10+ years,OWN,60500,Not Verified,Aug-2016,Fully Paid,medical,21.74,CA
+DEMO0021,9500, 36 months,14.68,327.83,B,Truck Driver,< 1 year,MORTGAGE,31500,Not Verified,Apr-2016,Fully Paid,medical,13.74,IL
+DEMO0022,11250, 36 months,24.2,442.55,C,Electrician,10+ years,OWN,135000,Not Verified,Jul-2018,Fully Paid,medical,7.47,IL
+DEMO0023,31000, 36 months,18.17,1123.37,B,Sales Manager,1 year,MORTGAGE,32500,Not Verified,Oct-2014,Fully Paid,home_improvement,26.56,IL
+DEMO0024,9750, 36 months,10.97,319.06,C,Teacher,< 1 year,OWN,151500,Not Verified,Aug-2018,Fully Paid,debt_consolidation,17.96,IL
+DEMO0025,15750, 60 months,15.05,375.1,E,Electrician,10+ years,RENT,157000,Not Verified,Dec-2018,Charged Off,medical,34.14,TX
+DEMO0026,11750, 60 months,8.43,240.67,D,Accountant,< 1 year,OWN,142500,Not Verified,Apr-2017,Fully Paid,credit_card,26.1,CA
+DEMO0027,26250, 36 months,11.06,860.14,B,Electrician,1 year,OWN,67500,Not Verified,Feb-2017,Charged Off,credit_card,37.64,TX
+DEMO0028,30500, 60 months,12.78,690.54,B,Accountant,3 years,RENT,69000,Not Verified,Dec-2016,Fully Paid,home_improvement,21.95,FL
+DEMO0029,27500, 60 months,16.35,673.87,C,Office Assistant,< 1 year,RENT,32500,Not Verified,Apr-2014,Fully Paid,home_improvement,11.79,TX
+DEMO0030,11250, 60 months,22.99,317.08,F,Software Engineer,6 years,RENT,97000,Not Verified,Sep-2018,Charged Off,home_improvement,5.22,CA
+DEMO0031,30000, 36 months,11.38,987.57,A,Registered Nurse,3 years,RENT,74500,Not Verified,Oct-2015,Fully Paid,home_improvement,33.06,FL
+DEMO0032,24500, 60 months,24.53,712.37,C,Project Manager,1 year,RENT,30500,Not Verified,Sep-2015,Fully Paid,credit_card,11.43,TX
+DEMO0033,22750, 60 months,16.62,560.76,B,Software Engineer,6 years,OWN,79500,Not Verified,Nov-2015,Charged Off,home_improvement,30.93,NY
+DEMO0034,3750, 36 months,20.66,140.63,E,Truck Driver,10+ years,MORTGAGE,37000,Not Verified,Apr-2017,Fully Paid,car,25.63,IL
+DEMO0035,22500, 36 months,25.65,902.35,C,Truck Driver,1 year,MORTGAGE,128500,Not Verified,Jun-2014,Fully Paid,debt_consolidation,4.55,WA
+DEMO0036,30500, 36 months,7.11,943.29,F,Store Manager,10+ years,OWN,93000,Not Verified,May-2018,Fully Paid,home_improvement,3.63,TX
+DEMO0037,20000, 60 months,6.07,387.31,C,Accountant,10+ years,MORTGAGE,68000,Not Verified,Apr-2014,Charged Off,credit_card,14.84,CA
+DEMO0038,27250, 36 months,15.49,951.18,E,Truck Driver,1 year,OWN,113500,Not Verified,Jan-2014,Charged Off,debt_consolidation,7.18,IL
+DEMO0039,28000, 36 months,11.99,929.87,F,Truck Driver,< 1 year,OWN,38500,Not Verified,Sep-2015,Charged Off,home_improvement,27.94,FL
+DEMO0040,21000, 36 months,6.88,647.27,F,Office Assistant,6 years,OWN,66000,Not Verified,Dec-2018,Fully Paid,medical,29.1,IL
