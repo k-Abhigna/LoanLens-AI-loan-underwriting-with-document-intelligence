@@ -15,7 +15,9 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from loanlens.audit import log_decision, read_log  # noqa: E402
-from loanlens.config import GENERATED_DIR, RESULTS_DIR  # noqa: E402
+from loanlens.config import DEMO_DIR, GENERATED_DIR, RESULTS_DIR  # noqa: E402
+from loanlens.generate import demo  # noqa: E402
+from loanlens.generate.build_dataset import build  # noqa: E402
 from loanlens.pipeline import METHODS, document_files, process_documents  # noqa: E402
 
 st.set_page_config(page_title="LoanLens", page_icon="🏦", layout="wide")
@@ -33,6 +35,16 @@ st.markdown(f"""
 </style>
 <div class="ll-credit">LoanLens · built by {AUTHOR}</div>
 """, unsafe_allow_html=True)
+
+
+@st.cache_resource(show_spinner="First start: generating 40 demo applications...")
+def ensure_demo_data() -> None:
+    """On a fresh deploy there are no documents yet, so create the demo set once."""
+    if (GENERATED_DIR / "manifest.csv").exists():
+        return
+    demo.main()
+    build(DEMO_DIR / "demo_borrowers.csv", GENERATED_DIR, limit=40, fraud_rate=0.2,
+          scan_rate=0.25, new_layout_rate=0.3, seed=42)
 
 
 def preview(path: Path):
@@ -94,6 +106,7 @@ def show_result(result: dict, files: list[Path], app_id: str, truth: dict | None
                 st.success("Saved to audit log" + (" (override)" if entry["overridden"] else ""))
 
 
+ensure_demo_data()
 st.title("🏦 LoanLens: loan document review")
 method = st.sidebar.selectbox("Extractor", METHODS,
                               help="rules = offline regex baseline; gemini/ollama = free LLMs")
