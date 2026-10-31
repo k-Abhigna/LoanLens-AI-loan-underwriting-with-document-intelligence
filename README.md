@@ -7,7 +7,7 @@ extracts the key fields, cross-checks the documents against each other to catch 
 computes affordability and recommends **APPROVE / REVIEW / REJECT**, with written reasons, for
 a human loan officer to confirm.
 
-**Live demo:** _add your Streamlit link here_
+**Live demo:** https://loanlens-ai-loan-underwriting-with-document-intelligence-uhwpy.streamlit.app/
 
 ![LoanLens review screen](docs/screenshot.png)
 

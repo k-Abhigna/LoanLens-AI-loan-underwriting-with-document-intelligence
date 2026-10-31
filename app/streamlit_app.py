@@ -110,6 +110,13 @@ ensure_demo_data()
 st.title("🏦 LoanLens: loan document review")
 method = st.sidebar.selectbox("Extractor", METHODS,
                               help="rules = offline regex baseline; gemini/ollama = free LLMs")
+if method == "rules":
+    st.sidebar.info(
+        "The rules baseline only knows one payslip and bank-statement layout. About 30% of "
+        "sample applications use a layout it has never seen, so it misreads them (e.g. "
+        "'PAY SLIP' as the employer) and wrongly flags them. That failure is deliberate: the "
+        "Gemini extractor reads both layouts at 97% accuracy. See the Evaluation tab / README."
+    )
 tab_review, tab_audit, tab_eval = st.tabs(["Review application", "Audit log", "Evaluation"])
 
 with tab_review:
