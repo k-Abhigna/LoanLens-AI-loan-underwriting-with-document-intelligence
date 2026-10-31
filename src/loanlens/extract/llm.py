@@ -8,6 +8,7 @@ Setup (pick one):
 
 import json
 import os
+import time
 
 import requests
 from dotenv import load_dotenv
@@ -46,15 +47,27 @@ def _call_gemini(prompt: str) -> str:
     key = os.getenv("GEMINI_API_KEY")
     if not key:
         raise RuntimeError("GEMINI_API_KEY is not set. Add it to the .env file.")
-    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    model = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0},
     }
-    resp = requests.post(url, json=body, headers={"x-goog-api-key": key}, timeout=60)
-    resp.raise_for_status()
-    return resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+    timeout = float(os.getenv("GEMINI_TIMEOUT", "180"))
+    # Free tier: busy servers (timeouts, 429, 5xx) are common, so back off and retry
+    for attempt in range(4):
+        try:
+            resp = requests.post(url, json=body, headers={"x-goog-api-key": key}, timeout=timeout)
+        except requests.Timeout:
+            if attempt == 3:
+                raise RuntimeError(f"Gemini did not answer within {timeout:.0f}s (model {model})")
+        else:
+            if resp.ok:
+                return resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+            if resp.status_code not in (429, 500, 503) or attempt == 3:
+                raise RuntimeError(f"Gemini {resp.status_code} for model {model}: "
+                                   f"{resp.text[:300]}")
+        time.sleep(10 * (attempt + 1))
 
 
 def _call_ollama(prompt: str) -> str:
