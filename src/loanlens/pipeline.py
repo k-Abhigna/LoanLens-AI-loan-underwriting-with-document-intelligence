@@ -35,6 +35,8 @@ def process_documents(paths: list[Path], method: str = "rules") -> dict:
                  "type_confidence": conf, "fields": None}
         if doc_type != "unknown" and doc_type not in fields:
             extracted = extract_fields(doc_type, text, method)
+            if read_with == "ocr" and doc_type == "payslip":
+                extracted = rules.clean_ocr_payslip(extracted)
             fields[doc_type] = extracted
             entry["fields"] = extracted.model_dump()
         docs.append(entry)

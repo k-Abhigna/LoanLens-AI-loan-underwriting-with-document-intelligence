@@ -54,17 +54,40 @@ above 35% → review; loan above 50% of annual income → review; under 1 year e
 
 ## Results
 
-> Fill in after running the evaluation on the real Lending Club sample (see below).
+Evaluated on **real Lending Club borrowers** (documents generated from their records; 23% with
+injected fraud, 25% scanned payslips, 30% in a layout the regex rules have never seen).
+The rules-vs-Gemini comparison uses the same 60 applications (17 of them fraudulent).
 
 | Metric | Rules baseline | Gemini (free tier) |
 |---|---|---|
-| Field accuracy, seen layout | | |
-| Field accuracy, **unseen layout** | | |
-| Fraud recall / precision | | |
-| False fraud alarms on clean applications | | |
-| Default rate: APPROVE vs REJECT (real outcomes) | | |
-| Risk score AUC vs real defaults | | |
-| Seconds per application | | |
+| Field accuracy, seen layout | 99.5% | 97.3% |
+| Field accuracy, **unseen layout** | **0.0%** | **97.2%** |
+| Fraud recall | 88.2% | **100%** |
+| Fraud precision | 55.6% | **100%** |
+| False fraud alarms on clean applications | 12 | **0** |
+| Risk score AUC vs real defaults | 0.522 | 0.629 |
+| Seconds per application | 1.6 | 12.1 |
+
+**Rules baseline on all 300 applications:** 100% document classification, 99.6% field accuracy
+on the seen layout and 0% on the unseen one, 94.7% on scanned payslips, fraud recall 78.3%.
+None of the 69 fraudulent applications was auto-approved: every missed case went to human
+review.
+
+**What this shows**
+- Template rules are fast and near-perfect on a known layout, but collapse on a new one, and
+  their misreads (e.g. reading "PAY SLIP" as the employer) become false fraud alarms.
+- The LLM extractor generalises to the unseen layout with no code changes and removed every
+  false alarm, at about 8x the latency.
+- Default prediction is modest (AUC 0.63). Lending Club had already approved these borrowers,
+  and the documents carry only income, debt and employment, not credit history.
+
+**Known weakness:** LLM accuracy on *scanned* payslips was about 75% (names, employer and pay
+period copied with OCR spacing errors). The OCR cleanup used by the rules now runs on every
+extractor's output; this has not been re-measured with Gemini yet.
+
+Reproduce: `python evals/run_eval.py` (rules, all) ·
+`python evals/run_eval.py --method gemini --limit 60 --sleep 7` ·
+`python evals/run_eval.py --limit 60 --tag first60`
 
 ## Quick start
 
@@ -151,6 +174,7 @@ loanlens/
 - Default prediction is limited because documents carry only income, debt and employment.
   Credit bureau data would be needed for a strong risk model.
 - Vision-LLM extraction directly from images (instead of OCR → LLM) is not yet compared.
+- The rules-vs-LLM comparison covers 60 applications; a larger run would tighten the numbers.
 
 ## License
 MIT

@@ -95,6 +95,15 @@ def extract_payslip(text: str) -> PayslipFields:
     )
 
 
+def clean_ocr_payslip(slip: PayslipFields) -> PayslipFields:
+    """Undo OCR damage in text fields, whichever extractor read them."""
+    return slip.model_copy(update={
+        "employee_name": _fix_ocr_words(slip.employee_name),
+        "employer": _fix_ocr_words(slip.employer),
+        "pay_period": _clean_period(slip.pay_period),
+    })
+
+
 def extract_bank_statement(text: str) -> BankStatementFields:
     credits, payer = [], None
     for line in text.splitlines():

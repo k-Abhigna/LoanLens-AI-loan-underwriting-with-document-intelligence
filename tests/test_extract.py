@@ -43,6 +43,16 @@ def test_ocr_noise_cleanup():
     assert slip.pay_period == "2018-06-01 to 2018-06-30"
 
 
+def test_ocr_cleanup_applies_to_any_extractor():
+    from loanlens.schemas import PayslipFields
+    slip = PayslipFields(employee_name="Kevin'Wells", employer="BrightwaveTelecom",
+                         pay_period="2018-10-01to2018-10-31", gross_pay=5000.0)
+    clean = rules.clean_ocr_payslip(slip)
+    assert (clean.employee_name, clean.employer, clean.pay_period) == (
+        "Kevin Wells", "Brightwave Telecom", "2018-10-01 to 2018-10-31")
+    assert clean.gross_pay == 5000.0
+
+
 def test_llm_retries_once_on_invalid_json(monkeypatch):
     answers = iter(['{"gross_pay": "lots"}', json.dumps({"gross_pay": 5000.0, "net_pay": 3900.0})])
     calls = []
