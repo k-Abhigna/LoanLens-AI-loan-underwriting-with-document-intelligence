@@ -108,15 +108,8 @@ def show_result(result: dict, files: list[Path], app_id: str, truth: dict | None
 
 ensure_demo_data()
 st.title("🏦 LoanLens: loan document review")
-method = st.sidebar.selectbox("Extractor", METHODS,
-                              help="rules = offline regex baseline; gemini/ollama = free LLMs")
-if method == "rules":
-    st.sidebar.info(
-        "The rules baseline only knows one payslip and bank-statement layout. About 30% of "
-        "sample applications use a layout it has never seen, so it misreads them (e.g. "
-        "'PAY SLIP' as the employer) and wrongly flags them. That failure is deliberate: the "
-        "Gemini extractor reads both layouts at 97% accuracy. See the Evaluation tab / README."
-    )
+# The extractor picker is drawn at the bottom of the page; its value is read here first
+method = st.session_state.get("method", METHODS[0])
 tab_review, tab_audit, tab_eval = st.tabs(["Review application", "Audit log", "Evaluation"])
 
 with tab_review:
@@ -150,6 +143,16 @@ with tab_review:
                 st.error(f"{type(err).__name__}: {err}")
     if "result" in st.session_state and st.session_state["result"][0] == app_id:
         show_result(st.session_state["result"][1], files, app_id, truth)
+
+    with st.expander("Advanced: extraction method"):
+        st.selectbox("Extractor", METHODS, key="method",
+                     help="rules = offline regex baseline; gemini/ollama = free LLMs")
+        st.caption(
+            "The rules baseline only knows one payslip and bank-statement layout. About 30% of "
+            "sample applications use a layout it has never seen, so it misreads them (e.g. "
+            "'PAY SLIP' as the employer) and wrongly flags them. The Gemini extractor reads "
+            "both layouts at 97% accuracy. See the Evaluation tab / README."
+        )
 
 with tab_audit:
     log = read_log()
