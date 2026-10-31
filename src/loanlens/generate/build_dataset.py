@@ -6,8 +6,11 @@ Usage:
 
 import argparse
 import json
+import os
 import random
 import shutil
+import stat
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -18,12 +21,25 @@ from loanlens.generate.profile import FRAUD_TYPES, TEMPLATES, build_case
 from loanlens.generate.scan import pdf_to_scan
 
 
+def _clear_readonly_and_retry(func, path, _exc):
+    """Windows refuses to delete read-only files (e.g. after copying out of OneDrive)."""
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
+
+
+def remove_tree(path: Path) -> None:
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=_clear_readonly_and_retry)
+    else:
+        shutil.rmtree(path, onerror=_clear_readonly_and_retry)
+
+
 def build(input_csv: Path, out_dir: Path, limit: int, fraud_rate: float, scan_rate: float,
           new_layout_rate: float, seed: int) -> pd.DataFrame:
     rng = random.Random(seed)
     borrowers = pd.read_csv(input_csv).head(limit)
     if out_dir.exists():
-        shutil.rmtree(out_dir)
+        remove_tree(out_dir)
     out_dir.mkdir(parents=True)
 
     manifest = []
