@@ -11,6 +11,13 @@ a human loan officer to confirm.
 
 ![LoanLens review screen](docs/screenshot.png)
 
+## What the officer sees
+
+| Fraud forensics | Evidence highlighting |
+|---|---|
+| ![Fraud forensics](docs/screenshot_forensics.png) | ![Evidence highlighting](docs/screenshot_evidence.png) |
+| Salary actually deposited, month by month, against what the payslip claims. Inflated payslips stand out as red bars far below the claimed line. | Every extracted value is boxed and numbered where it was found on the page, so no number has to be trusted blindly. Values that were extracted but can't be located are flagged. |
+
 ## The problem
 
 | | |

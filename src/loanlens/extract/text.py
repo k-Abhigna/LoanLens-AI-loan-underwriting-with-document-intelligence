@@ -14,16 +14,23 @@ def _ocr_engine():
     return RapidOCR()
 
 
+@lru_cache(maxsize=64)
+def ocr_boxes(path: str) -> tuple[dict, ...]:
+    """OCR text fragments with their pixel boxes. Cached: the evidence view reuses them."""
+    result, _ = _ocr_engine()(path)
+    boxes = []
+    for points, text, _score in result or []:
+        xs, ys = [p[0] for p in points], [p[1] for p in points]
+        boxes.append({"x0": min(xs), "y0": min(ys), "x1": max(xs), "y1": max(ys), "text": text})
+    return tuple(boxes)
+
+
 def ocr_image(path: Path) -> str:
     """Run OCR and rebuild reading order: group word boxes into lines by their height."""
-    result, _ = _ocr_engine()(str(path))
-    if not result:
+    boxes = [{"x": b["x0"], "y": (b["y0"] + b["y1"]) / 2, "h": b["y1"] - b["y0"],
+              "text": b["text"]} for b in ocr_boxes(str(path))]
+    if not boxes:
         return ""
-    boxes = []
-    for points, text, _score in result:
-        ys = [p[1] for p in points]
-        boxes.append({"x": min(p[0] for p in points), "y": sum(ys) / 4,
-                      "h": max(ys) - min(ys), "text": text})
     boxes.sort(key=lambda b: b["y"])
 
     lines, current = [], [boxes[0]]
