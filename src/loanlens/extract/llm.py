@@ -1,9 +1,7 @@
-"""LLM extractor using FREE options: Google Gemini (free tier) or a local Ollama model.
+"""LLM extractor using Google Gemini (free tier).
 
-Setup (pick one):
-  Gemini: get a free key at https://aistudio.google.com/apikey and put
-          GEMINI_API_KEY=... in a .env file in the project root.
-  Ollama: install from https://ollama.com, run `ollama pull qwen2.5:3b`.
+Setup: get a free key at https://aistudio.google.com/apikey and put
+GEMINI_API_KEY=... in a .env file in the project root (or in Streamlit Cloud secrets).
 """
 
 import json
@@ -46,7 +44,7 @@ Document text:
 def _call_gemini(prompt: str) -> str:
     key = os.getenv("GEMINI_API_KEY")
     if not key:
-        raise RuntimeError("GEMINI_API_KEY is not set. Add it to the .env file.")
+        raise RuntimeError("GEMINI_API_KEY is not set (add it to .env, or to Streamlit Cloud secrets)")
     model = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {
@@ -70,21 +68,7 @@ def _call_gemini(prompt: str) -> str:
         time.sleep(10 * (attempt + 1))
 
 
-def _call_ollama(prompt: str) -> str:
-    url = os.getenv("OLLAMA_URL", "http://localhost:11434") + "/api/chat"
-    body = {
-        "model": os.getenv("OLLAMA_MODEL", "qwen2.5:3b"),
-        "messages": [{"role": "user", "content": prompt}],
-        "format": "json",
-        "stream": False,
-        "options": {"temperature": 0},
-    }
-    resp = requests.post(url, json=body, timeout=180)
-    resp.raise_for_status()
-    return resp.json()["message"]["content"]
-
-
-PROVIDERS = {"gemini": _call_gemini, "ollama": _call_ollama}
+PROVIDERS = {"gemini": _call_gemini}
 
 
 def extract(doc_type: str, text: str, provider: str = "gemini"):

@@ -15,7 +15,7 @@ flowchart LR
         O --> C
         C --> E{Extractor}
         E -- rules --> R[Regex baseline]
-        E -- gemini / ollama --> L[LLM → JSON<br/>Pydantic validate + 1 retry]
+        E -- gemini --> L[LLM → JSON<br/>Pydantic validate + 1 retry]
         R --> X[Cross-document checks]
         L --> X
         X --> V[Verified income<br/>DTI, LTI]
@@ -38,7 +38,7 @@ flowchart LR
 | `extract/text.py` | PDF text or OCR text with reading-order reconstruction |
 | `extract/classify.py` | Document type from keywords |
 | `extract/rules.py` | Regex extraction baseline, OCR-noise tolerant |
-| `extract/llm.py` | Gemini / Ollama JSON extraction with schema validation and retry |
+| `extract/llm.py` | Gemini JSON extraction with schema validation, retries and timeouts |
 | `checks.py` | Name, employer, arithmetic and income consistency checks; verified income |
 | `decide.py` | Credit policy → decision, reasons, risk score, confidence |
 | `audit.py` | Append-only log of AI recommendations and officer decisions |

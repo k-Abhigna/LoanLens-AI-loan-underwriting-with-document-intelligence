@@ -19,7 +19,7 @@ and income fraud slips through.
 |---|---|
 | Read the document (PDF text layer or OCR for scans) | OCR / PDF parser |
 | Classify document type | Keyword classifier |
-| Extract fields into a fixed schema | Regex baseline **or** LLM (Gemini free tier / local Ollama) |
+| Extract fields into a fixed schema | LLM (Gemini free tier); regex rules as offline baseline and fallback |
 | Cross-check documents against each other | Deterministic rules |
 | Compute verified income, DTI, loan-to-income | Deterministic rules |
 | Recommend APPROVE / REVIEW / REJECT with reasons | Policy rules |

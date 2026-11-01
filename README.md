@@ -129,15 +129,15 @@ python evals/run_eval.py
 ```
 Results are written to `evals/results/`.
 
-### 4. Use a free LLM extractor
-Copy `.env.example` to `.env`, then either:
-- **Gemini:** create a free key at https://aistudio.google.com/apikey and set `GEMINI_API_KEY`.
-  If the default model name is retired, set `GEMINI_MODEL` to a current free model.
-- **Ollama:** install from https://ollama.com and run `ollama pull qwen2.5:3b`.
+### 4. Use the Gemini extractor (free)
+Copy `.env.example` to `.env`, create a free key at https://aistudio.google.com/apikey and set
+`GEMINI_API_KEY`. If the default model name is retired, set `GEMINI_MODEL` to a current free
+model. The app always uses Gemini; if it is unavailable (no key, quota used up, timeout) it falls
+back to the offline rules baseline and says so on screen.
 
 ```powershell
 python evals/run_eval.py --method gemini --limit 100 --sleep 7
-python -m loanlens.pipeline data/generated/<application_id> --method ollama
+python -m loanlens.pipeline data/generated/<application_id> --method gemini
 ```
 `--sleep` keeps you inside the free tier's rate limit (3 LLM calls per application).
 

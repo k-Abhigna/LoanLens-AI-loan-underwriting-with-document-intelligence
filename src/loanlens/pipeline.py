@@ -15,7 +15,7 @@ from loanlens.extract import rules
 from loanlens.extract.classify import classify
 from loanlens.extract.text import IMAGE_EXTS, get_text
 
-METHODS = ["rules", "gemini", "ollama"]
+METHODS = ["rules", "gemini"]
 
 
 def extract_fields(doc_type: str, text: str, method: str):

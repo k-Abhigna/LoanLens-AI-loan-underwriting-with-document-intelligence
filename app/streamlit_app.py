@@ -20,7 +20,7 @@ from loanlens.config import DEMO_DIR, GENERATED_DIR, POLICY, RESULTS_DIR  # noqa
 from loanlens.evidence import highlight  # noqa: E402
 from loanlens.generate import demo  # noqa: E402
 from loanlens.generate.build_dataset import build  # noqa: E402
-from loanlens.pipeline import METHODS, document_files, process_documents  # noqa: E402
+from loanlens.pipeline import document_files, process_documents  # noqa: E402
 
 st.set_page_config(page_title="LoanLens", page_icon="🏦", layout="wide")
 AUTHOR = "Abhigna Komaravolu"
@@ -83,6 +83,16 @@ def ensure_demo_data() -> None:
     demo.main()
     build(DEMO_DIR / "demo_borrowers.csv", GENERATED_DIR, limit=40, fraud_rate=0.2,
           scan_rate=0.25, new_layout_rate=0.3, seed=42)
+
+
+def run_underwriting(files: list[Path]) -> dict:
+    """Gemini first; if it is unavailable, fall back to the offline rules so the app never breaks."""
+    try:
+        return process_documents(files, "gemini")
+    except Exception as err:
+        result = process_documents(files, "rules")
+        result["fallback_reason"] = f"{type(err).__name__}: {err}"[:200]
+        return result
 
 
 @st.cache_data(show_spinner=False)
@@ -166,8 +176,8 @@ def forensics_view(result: dict) -> None:
     net, credits = slip.get("net_pay"), bank.get("salary_credits") or []
     if not credits:
         st.info("No salary deposits could be read from the bank statement, so there is "
-                "nothing to compare. The rules extractor cannot read the unseen bank layout; "
-                "try the Gemini extractor (Advanced, at the bottom of the page).")
+                "nothing to compare. This happens when Gemini was unavailable and the rules "
+                "fallback met a bank-statement layout it does not know.")
         return
 
     tol, reject = POLICY["income_tolerance"], POLICY["income_reject_mismatch"]
@@ -295,6 +305,10 @@ def officer_form(result: dict, app_id: str) -> None:
 
 
 def show_result(result: dict, files: list[Path], app_id: str, truth: dict | None) -> None:
+    if result.get("fallback_reason"):
+        st.warning("Gemini was unavailable, so the offline rules baseline was used. It only "
+                   "knows one payslip and bank-statement layout and can misread others. "
+                   f"Reason: {result['fallback_reason']}")
     step_tracker(result)
     decision_hero(result)
     st.write("")
@@ -320,8 +334,6 @@ st.title("🏦 LoanLens")
 st.markdown('<div class="ll-sub">AI loan underwriting with document intelligence: reads the '
             'application, payslip and bank statement, checks them against each other, and '
             'recommends a decision for a human loan officer.</div>', unsafe_allow_html=True)
-# The extractor picker is drawn at the bottom of the page; its value is read here first
-method = st.session_state.get("method", METHODS[0])
 tab_review, tab_audit, tab_eval = st.tabs(["Review application", "Audit log", "Evaluation"])
 
 with tab_review:
@@ -348,23 +360,13 @@ with tab_review:
             app_id = f"upload-{tmp.name}"
 
     if files and st.button("Run underwriting", type="primary"):
-        with st.spinner("Reading documents..."):
+        with st.spinner("Reading documents with Gemini (about 10–20 seconds)..."):
             try:
-                st.session_state["result"] = (app_id, process_documents(files, method))
+                st.session_state["result"] = (app_id, run_underwriting(files))
             except Exception as err:
                 st.error(f"{type(err).__name__}: {err}")
     if "result" in st.session_state and st.session_state["result"][0] == app_id:
         show_result(st.session_state["result"][1], files, app_id, truth)
-
-    with st.expander("Advanced: extraction method"):
-        st.selectbox("Extractor", METHODS, key="method",
-                     help="rules = offline regex baseline; gemini/ollama = free LLMs")
-        st.caption(
-            "The rules baseline only knows one payslip and bank-statement layout. About 30% of "
-            "sample applications use a layout it has never seen, so it misreads them (e.g. "
-            "'PAY SLIP' as the employer) and wrongly flags them. The Gemini extractor reads "
-            "both layouts at 97% accuracy. See the Evaluation tab / README."
-        )
 
 with tab_audit:
     log = read_log()
