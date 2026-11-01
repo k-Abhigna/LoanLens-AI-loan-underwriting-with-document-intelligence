@@ -375,10 +375,31 @@ with tab_audit:
     else:
         st.info("No decisions recorded yet.")
 
+REPORT_TITLES = {
+    "results_gemini": "Gemini extractor · 60 real applications",
+    "results_rules_first60": "Rules baseline · the same 60 applications",
+    "results_rules": "Rules baseline · all 300 applications",
+}
+
 with tab_eval:
-    reports = sorted(RESULTS_DIR.glob("results_*.md"))
+    st.markdown(
+        "Measured on **real Lending Club borrowers**: documents generated from their records, "
+        "23% with injected fraud, 25% scanned payslips and 30% in a layout the rules have never "
+        "seen. Decisions are compared with whether each borrower actually repaid.")
+    st.markdown(
+        "| On the same 60 applications | Rules | Gemini |\n|---|---|---|\n"
+        "| Field accuracy, unseen layout | 0.0% | **97.2%** |\n"
+        "| Fraud caught (recall) | 88.2% | **100%** |\n"
+        "| False fraud alarms | 12 | **0** |\n"
+        "| Seconds per application | **1.6** | 12.1 |")
+    reports = [RESULTS_DIR / f"{name}.md" for name in REPORT_TITLES
+               if (RESULTS_DIR / f"{name}.md").exists()]
     if not reports:
         st.info("Run `python evals/run_eval.py` to create evaluation results.")
-    for report in reports:
-        with st.expander(report.stem, expanded=len(reports) == 1):
-            st.markdown(report.read_text())
+    for i, report in enumerate(reports):
+        with st.expander(f"Full report: {REPORT_TITLES[report.stem]}", expanded=i == 0):
+            text = report.read_text().replace("$", "\\$")
+            # Report headings are page-level; shrink them to fit inside the box
+            text = "\n".join("###" + line if line.startswith("#") else line
+                              for line in text.splitlines())
+            st.markdown(text)
